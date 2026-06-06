@@ -1,853 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>IskoHunt: Scholarship Finder</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Lato:wght@300;400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-<style>
-:root {
-  --maroon: #6B0F1A;
-  --maroon-dark: #4A0A12;
-  --maroon-light: #8B1A28;
-  --crimson: #8B0000;
-  --crimson-mid: #A61C1C;
-  --crimson-light: #f5e9e9;
-  --gold: #C9963A;
-  --gold-light: #E8B86D;
-  --cream: #FAF7F2;
-  --white: #FFFFFF;
-  --gray-100: #F3F0EB;
-  --gray-200: #E5E0D8;
-  --gray-400: #9E9589;
-  --gray-600: #5C5650;
-  --gray-800: #2E2B27;
-  --text-mid: #4a3535;
-  --text-muted: #7a6060;
-  --card-border: rgba(139,0,0,0.12);
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Lato', 'Segoe UI', sans-serif;
-  --font-dm: 'DM Sans', sans-serif;
-  --radius: 12px;
-  --radius-lg: 20px;
-  --shadow: 0 4px 24px rgba(107,15,26,0.10);
-  --shadow-lg: 0 12px 48px rgba(107,15,26,0.18);
-  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-body);
-  background: linear-gradient(135deg, rgba(250,247,242,0.95) 0%, rgba(245,233,233,0.92) 100%), 
-              url('bg.png') center/cover no-repeat fixed;
-  color: var(--gray-800);
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
-}
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: rgba(107,15,26,0.015);
-  pointer-events: none;
-  z-index: 0;
-}
-#app {
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IskoHunt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── NAVBAR (matches landing.html) ── */
-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 56px;
-  border-bottom: 1px solid rgba(139,0,0,0.08);
-  backdrop-filter: blur(8px);
-  background: rgba(255,255,255,0.6);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+    :root {
+      --crimson: #8B0000;
+      --crimson-mid: #A61C1C;
+      --crimson-light: #f5e9e9;
+      --crimson-pale: #fdf5f5;
+      --text-dark: #1a1010;
+      --text-mid: #4a3535;
+      --text-muted: #7a6060;
+      --white: #ffffff;
+      --card-border: rgba(139,0,0,0.12);
+      --shadow-soft: 0 4px 32px rgba(139,0,0,0.08);
+    }
 
-.nav-logo {
-  height: 42px;
-  object-fit: contain;
-}
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-dark);
+      background: var(--white);
+      overflow-x: hidden;
+    }
 
-.nav-links {
-  display: flex;
-  gap: 36px;
-  list-style: none;
-}
-.nav-links a {
-  text-decoration: none;
-  color: var(--text-mid);
-  font-family: var(--font-dm);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  transition: color 0.2s;
-  position: relative;
-}
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -3px; left: 0;
-  width: 0; height: 2px;
-  background: var(--crimson);
-  transition: width 0.25s ease;
-  border-radius: 2px;
-}
-.nav-links a:hover { color: var(--crimson); }
-.nav-links a:hover::after { width: 100%; }
+    /* ── BACKGROUND ── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      /* Replace src with your background image */
+      background: url('bg.png') center/cover no-repeat;
+      background-color: #fdf5f5;
+    }
+    .bg-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 40%, rgba(139,0,0,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 10% 80%, rgba(139,0,0,0.04) 0%, transparent 60%),
+        linear-gradient(to bottom, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.72) 100%);
+    }
 
-/* ── MAIN CONTENT ── */
-main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
-}
-.screen { display: none; width: 100%; max-width: 1000px; }
-.screen.screen-active {
-  display: block;
-  animation: fadeSlideUp 0.45s var(--transition) both;
-}
-@keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.card {
-  background: rgba(255,255,255,0.98);
-  backdrop-filter: blur(16px);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.3);
-}
-.card-header {
-  background: var(--crimson);
-  padding: 2rem 2.5rem 1.8rem;
-  position: relative;
-  overflow: hidden;
-}
-.card-header::after {
-  content: '';
-  position: absolute;
-  right: -40px; top: -40px;
-  width: 160px; height: 160px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.06);
-}
-.card-header::before {
-  content: '';
-  position: absolute;
-  right: 40px; bottom: -60px;
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-}
-.card-body { padding: 2rem 2.5rem 2.5rem; }
-.logo-ring {
-  width: 72px; height: 72px;
-  border: 3px solid rgba(255,255,255,0.5);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 1.2rem;
-  position: relative; z-index: 1;
-}
-.logo-ring svg { width: 36px; height: 36px; fill: none; stroke: rgba(255,255,255,0.85); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.landing-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
-  color: var(--white);
-  line-height: 1.15;
-  position: relative; z-index: 1;
-}
-.landing-title span { color: rgba(255,255,255,0.8); }
-.landing-subtitle {
-  color: rgba(255,255,255,0.7);
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  position: relative; z-index: 1;
-}
-.landing-desc { color: var(--gray-600); line-height: 1.75; font-size: 0.97rem; margin-bottom: 1.6rem; }
-.feature-badges { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; }
-.badge {
-  background: var(--crimson-light);
-  color: var(--crimson);
-  border: 1px solid rgba(139,0,0,0.15);
-  border-radius: 50px;
-  padding: 0.3rem 0.85rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-.form-group { margin-bottom: 1.2rem; }
-.form-label {
-  display: block;
-  font-weight: 700;
-  font-size: 0.82rem;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--gray-600);
-  margin-bottom: 0.45rem;
-}
-.form-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--gray-200);
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: 0.97rem;
-  color: var(--gray-800);
-  background: var(--gray-100);
-  outline: none;
-  transition: border-color var(--transition), background var(--transition);
-}
-.form-input:focus { border-color: var(--crimson); background: var(--white); }
-.form-input::placeholder { color: var(--gray-400); }
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.8rem 2rem;
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  border: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
-}
-.btn:active { transform: scale(0.97); }
-.btn-primary {
-  background: var(--crimson);
-  color: var(--white);
-  box-shadow: 0 4px 16px rgba(139,0,0,0.25);
-  width: 100%;
-}
-.btn-primary:hover {
-  background: var(--crimson-mid);
-  box-shadow: 0 6px 24px rgba(139,0,0,0.35);
-  transform: translateY(-1px);
-}
-.progress-wrap { margin-bottom: 1.6rem; }
-.progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-.progress-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
-.progress-count { font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.9); }
-.progress-track { height: 6px; background: rgba(255,255,255,0.2); border-radius: 50px; overflow: hidden; }
-.progress-fill {
-  height: 100%;
-  background: rgba(255,255,255,0.85);
-  border-radius: 50px;
-  transition: width 0.4s var(--transition);
-}
-.category-chip {
-  display: inline-block;
-  background: var(--crimson);
-  color: var(--white);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.75rem;
-  border-radius: 50px;
-  margin-bottom: 0.9rem;
-}
-.question-text {
-  font-family: var(--font-display);
-  font-size: clamp(1.1rem, 3vw, 1.45rem);
-  color: var(--gray-800);
-  line-height: 1.45;
-  margin-bottom: 2rem;
-}
-.answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.answer-btn {
-  padding: 1.1rem 1rem;
-  border-radius: var(--radius);
-  border: 2px solid var(--gray-200);
-  background: var(--gray-100);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--gray-600);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-}
-.answer-btn:hover {
-  border-color: var(--crimson);
-  color: var(--crimson);
-  background: var(--white);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-.answer-btn.selected-yes { background: var(--crimson); border-color: var(--crimson); color: var(--white); box-shadow: 0 4px 16px rgba(139,0,0,0.3); }
-.answer-btn.selected-no { background: var(--gray-600); border-color: var(--gray-600); color: var(--white); }
-.question-inner { animation: questionIn 0.38s var(--transition) both; }
-@keyframes questionIn {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes questionOut {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(-30px); }
-}
-.question-inner.exiting { animation: questionOut 0.3s var(--transition) both; }
-.results-header-text {
-  font-family: var(--font-display);
-  color: var(--white);
-  font-size: clamp(1.3rem, 4vw, 1.9rem);
-  position: relative; z-index: 1;
-}
-.results-meta { color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 0.3rem; position: relative; z-index: 1; }
-.results-count-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(255,255,255,0.2);
-  color: var(--white);
-  font-weight: 700;
-  font-size: 0.8rem;
-  padding: 0.3rem 0.8rem;
-  border-radius: 50px;
-  margin-top: 0.8rem;
-  position: relative; z-index: 1;
-  border: 1px solid rgba(255,255,255,0.3);
-}
-.scholarship-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
-.scholarship-item {
-  border: 2px solid var(--gray-200);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  animation: fadeSlideUp 0.4s both;
-}
-.scholarship-item:nth-child(1) { animation-delay: 0.05s; }
-.scholarship-item:nth-child(2) { animation-delay: 0.12s; }
-.scholarship-item:nth-child(3) { animation-delay: 0.19s; }
-.scholarship-item:nth-child(4) { animation-delay: 0.26s; }
-.scholarship-item:nth-child(5) { animation-delay: 0.33s; }
-.scholarship-item:hover { border-color: var(--crimson); box-shadow: var(--shadow); }
-.scholarship-item-header {
-  background: var(--crimson);
-  padding: 0.8rem 1.2rem;
-  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-}
-.scholarship-name { font-family: var(--font-display); font-size: 0.97rem; color: var(--white); }
-.scholarship-type {
-  background: rgba(255,255,255,0.2);
-  color: var(--white);
-  border: 1px solid rgba(255,255,255,0.3);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.6rem;
-  border-radius: 50px;
-  white-space: nowrap;
-}
-.scholarship-item-body { padding: 1rem 1.2rem; background: var(--white); }
-.scholarship-desc { font-size: 0.88rem; color: var(--gray-600); line-height: 1.65; margin-bottom: 0.8rem; }
-.eligibility-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.eligibility-tag {
-  background: var(--crimson-light);
-  color: var(--crimson);
-  border: 1px solid rgba(139,0,0,0.15);
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 50px;
-}
-.no-match { text-align: center; padding: 2rem 1rem; }
-.no-match-icon { font-size: 3rem; margin-bottom: 0.8rem; }
-.no-match-title { font-family: var(--font-display); font-size: 1.3rem; color: var(--gray-800); margin-bottom: 0.5rem; }
-.no-match-desc { color: var(--gray-400); font-size: 0.9rem; line-height: 1.65; max-width: 380px; margin: 0 auto 1.5rem; }
-.user-greeting {
-  background: var(--crimson-light);
-  border-left: 4px solid var(--crimson);
-  padding: 0.8rem 1rem;
-  border-radius: 0 var(--radius) var(--radius) 0;
-  margin-bottom: 1.2rem;
-  font-size: 0.88rem;
-  color: var(--gray-600);
-}
-.user-greeting strong { color: var(--crimson); }
-footer {
-  background: rgba(255,255,255,0.6);
-  color: var(--text-muted);
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  border-top: 1px solid rgba(139,0,0,0.08);
-  font-family: var(--font-dm);
-  backdrop-filter: blur(8px);
-}
-.divider { height: 1px; background: var(--gray-200); margin: 1.5rem 0; }
-.error-msg {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  color: #991B1B;
-  border-radius: var(--radius);
-  padding: 0.7rem 1rem;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-  display: none;
-}
-.error-msg.visible { display: block; }
-.spinner-wrap { text-align: center; padding: 2.5rem 1rem; }
-.spinner {
-  width: 44px; height: 44px;
-  border: 4px solid var(--gray-200);
-  border-top-color: var(--crimson);
-  border-radius: 50%;
-  margin: 0 auto 1rem;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.spinner-text { color: var(--gray-400); font-size: 0.88rem; letter-spacing: 0.06em; }
+    /* ── WRAPPER ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* ── HELP BUBBLE ── */
-.help-bubble {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 44px;
-  height: 44px;
-  background: var(--crimson);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 4px 20px rgba(139,0,0,0.35);
-  transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 200;
-}
-.help-bubble:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(139,0,0,0.4); }
+    /* ── NAVBAR ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 56px;
+      border-bottom: 1px solid rgba(139,0,0,0.08);
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.6);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-@media (max-width: 720px) {
-  nav { padding: 16px 20px; }
-  .nav-links { display: none; }
-  .card-header { padding: 1.5rem 1.5rem 1.3rem; }
-  .card-body { padding: 1.5rem 1.5rem 2rem; }
-  .answer-grid { gap: 0.7rem; }
-  .answer-btn { padding: 0.9rem 0.5rem; font-size: 0.92rem; }
-}
-</style>
+    .nav-logo {
+      /* Replace with your logo image */
+      width: 140px;
+      height: 42px;
+      background: #f0e0e0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-mid);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: var(--crimson);
+      transition: width 0.25s ease;
+      border-radius: 2px;
+    }
+    .nav-links a:hover { color: var(--crimson); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--crimson);
+      color: var(--white);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .nav-cta:hover { background: var(--crimson-mid); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 64px;
+    }
+
+    .hero-logo-wrap {
+      /* Replace with your actual logo image via <img> tag or CSS background */
+      width: 220px;
+      height: 64px;
+      background: rgba(139,0,0,0.07);
+      border: 1.5px dashed rgba(139,0,0,0.25);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.1s ease forwards;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      background: var(--crimson-light);
+      color: var(--crimson);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s ease forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--text-dark);
+      max-width: 640px;
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.3s ease forwards;
+    }
+    .hero-title span { color: var(--crimson); }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 440px;
+      line-height: 1.65;
+      margin-bottom: 14px;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s ease forwards;
+    }
+
+    .hero-note {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 420px;
+      line-height: 1.6;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s ease forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s ease forwards;
+    }
+
+    .btn-primary {
+      background: var(--crimson);
+      color: var(--white);
+      border: none;
+      padding: 14px 36px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 6px 24px rgba(139,0,0,0.25);
+    }
+    .btn-primary:hover {
+      background: var(--crimson-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(139,0,0,0.3);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--crimson);
+      border: 1.5px solid rgba(139,0,0,0.35);
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+    .btn-ghost:hover {
+      background: var(--crimson-light);
+      border-color: var(--crimson);
+      transform: translateY(-1px);
+    }
+
+    /* ── FEATURE CARDS ── */
+    .cards-section {
+      padding: 0 48px 80px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s ease forwards;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+      cursor: default;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-soft);
+      border-color: rgba(139,0,0,0.22);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--crimson-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--crimson);
+    }
+    .card-icon svg { width: 22px; height: 22px; }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      letter-spacing: 0.01em;
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 720px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .cards-section { padding: 0 16px 60px; }
+      .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+      .hero { padding: 60px 20px 48px; }
+    }
+
+    /* ── HELP BUBBLE ── */
+    .help-bubble {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      background: var(--crimson);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(139,0,0,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      z-index: 200;
+    }
+    .help-bubble:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(139,0,0,0.4); }
+  </style>
 </head>
 <body>
-<div id="app">
 
-  <!-- NAVBAR (matches landing.html style) -->
+<div class="bg-layer"></div>
+
+<div class="page">
+
+  <!-- NAVBAR -->
   <nav>
-    <img src="logo2.png" alt="IskoHunt" class="nav-logo" />
+    <img src="logo2.png" alt="IskoHunt" style="height:42px;object-fit:contain;"/>
     <ul class="nav-links">
-      <li><a href="homescreen.html">Home</a></li>
-      <li><a href="homescreen.html">About</a></li>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Scholarships</a></li>
+      <li><a href="#">How It Works</a></li>
+      <li><a href="#">About</a></li>
     </ul>
+
   </nav>
 
-  <main>
-    <!-- SCREEN 1: LANDING -->
-    <div id="screen-landing" class="screen screen-active">
-      <div class="card">
-        <div class="card-header">
-          <div class="logo-ring">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-          </div>
-          <h1 class="landing-title">IskoHunt:<br><span>Scholarship Finder</span></h1>
-          <p class="landing-subtitle">Philippines · Academic Year 2026–2027</p>
-        </div>
-        <div class="card-body">
-          <p class="landing-desc">Answer a short set of questions and we'll match you with scholarships you're likely eligible for — no complicated applications, just honest answers.</p>
-          <div class="feature-badges">
-            <span class="badge">📋 21 Questions</span>
-            <span class="badge">🎓 Multiple Scholarships</span>
-            <span class="badge">⚡ Instant Results</span>
-            <span class="badge">🇵🇭 PH-Based</span>
-          </div>
-          <div class="divider"></div>
-          <div class="form-group">
-            <label class="form-label" for="input-name">Your Full Name</label>
-            <input id="input-name" class="form-input" type="text" placeholder="e.g., Juan dela Cruz" maxlength="80" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="input-address">Home Address / Province</label>
-            <input id="input-address" class="form-input" type="text" placeholder="e.g., Quezon City, Metro Manila" maxlength="120" />
-          </div>
-          <div id="landing-error" class="error-msg">⚠️ Please enter both your name and address to continue.</div>
-          <button class="btn btn-primary" onclick="startQuiz()">🎯 Start the Quiz</button>
-        </div>
-      </div>
+  <!-- HERO -->
+  <section class="hero">
+
+    <!-- LOGO -->
+    <img src="logo2.png" alt="IskoHunt" class="hero-logo-wrap" style="background:none;border:none;object-fit:contain;" />
+
+    <span class="hero-eyebrow">From searching to success</span>
+
+    <h1 class="hero-title">Welcome to <span>IskoHunt</span></h1>
+
+    <p class="hero-sub">Discover scholarships that match your unique profile in minutes.</p>
+
+    <p class="hero-note">Skip the endless searching. Answer a few simple questions and let IskoHunt find financial aid opportunities tailored to your academic profile, financial background, and eligibility.</p>
+
+    <div class="hero-actions">
+      <a href="index.html"><button class="btn-primary">Get Started</button></a>
     </div>
 
-    <!-- SCREEN 2: QUIZ -->
-    <div id="screen-quiz" class="screen">
-      <div class="card">
-        <div class="card-header" id="quiz-header">
-          <div class="progress-wrap">
-            <div class="progress-meta">
-              <span class="progress-label">Your Progress</span>
-              <span class="progress-count" id="progress-count">Question 1 of 21</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div id="question-inner" class="question-inner">
-            <div class="category-chip" id="q-category">Academic</div>
-            <p class="question-text" id="q-text">Loading question...</p>
-            <div class="answer-grid" id="answer-grid">
-              <button class="answer-btn" id="btn-yes" onclick="recordAnswer(true)">✅ Yes</button>
-              <button class="answer-btn" id="btn-no" onclick="recordAnswer(false)">❌ No</button>
-            </div>
-            <div id="income-input-wrap" style="display:none;">
-              <div class="form-group">
-                <label class="form-label" for="input-income">Enter your annual family income (₱)</label>
-                <input id="input-income" class="form-input" type="number" placeholder="e.g., 150000" min="0" />
-              </div>
-              <button class="btn btn-primary" style="margin-top:0.5rem" onclick="submitIncome()">➡️ Next</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  </section>
 
-    <!-- SCREEN 3: PROCESSING -->
-    <div id="screen-processing" class="screen">
-      <div class="card">
-        <div class="card-header">
-          <p class="results-header-text">Analyzing Your Answers…</p>
-        </div>
-        <div class="card-body">
-          <div class="spinner-wrap">
-            <div class="spinner"></div>
-            <p class="spinner-text">Matching scholarships for you</p>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- FEATURE CARDS -->
+  <div class="cards-section">
+    <div class="cards-grid">
 
-    <!-- SCREEN 4: RESULTS -->
-    <div id="screen-results" class="screen">
       <div class="card">
-        <div class="card-header" id="results-card-header">
-          <p class="results-header-text" id="results-title">Your Matching Scholarships</p>
-          <p class="results-meta" id="results-meta">Based on your quiz answers</p>
-          <div class="results-count-badge" id="results-count-badge">
-            🎓 <span id="results-count">0</span> matches found
-          </div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
         </div>
-        <div class="card-body">
-          <div class="user-greeting" id="user-greeting">
-            Hello, <strong id="greeting-name">Student</strong>! Here are scholarships you may qualify for based in <strong id="greeting-address">your area</strong>.
-          </div>
-          <div id="scholarship-list" class="scholarship-list"></div>
-          <div id="no-match-msg" class="no-match" style="display:none;">
-            <div class="no-match-icon">🔍</div>
-            <p class="no-match-title">No exact matches found</p>
-            <p class="no-match-desc">Don't worry! Scholarship criteria change often. Try adjusting your answers or explore CHED, DOST, and LGU programs directly. You might still qualify!</p>
-          </div>
-          <div class="divider"></div>
-          <button class="btn btn-primary" onclick="restartApp()">🔄 Retake the Quiz</button>
-        </div>
+        <div class="card-title">Smart Matching</div>
+        <div class="card-desc">Our intelligent system filters scholarships based on your specific qualifications and needs.</div>
       </div>
-    </div>
-  </main>
 
-  <footer>IskoHunt © 2025 · For informational purposes only · Always verify with official scholarship offices</footer>
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="card-title">Quick &amp; Easy</div>
+        <div class="card-desc">Simple yes-or-no questions get you matched with opportunities in minutes, not hours.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="card-title">Verified Results</div>
+        <div class="card-desc">Get only scholarships you're eligible for, based on your academic and financial profile.</div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- HELP BUBBLE -->
 <div class="help-bubble" title="Help">?</div>
 
-<script>
-const QUESTIONS = [
-  { id: "grade_90", category: "Academic", text: "Do you have a grade average of 90% or above?" },
-  { id: "enrolled", category: "Academic", text: "Are you currently enrolled in school?" },
-  { id: "graduating_hs", category: "Academic", text: "Are you a graduating high school student?" },
-  { id: "no_failing", category: "Academic", text: "Have you maintained no failing grades?" },
-  { id: "honor_roll", category: "Academic", text: "Are you part of the honor roll or dean's list?" },
-  { id: "family_income", category: "Financial", text: "How much is your family income?", inputType: "income" },
-  { id: "4ps", category: "Financial", text: "Are you a beneficiary of government financial assistance (e.g., 4Ps / Pantawid Pamilya)?" },
-  { id: "low_household", category: "Financial", text: "Do you belong to a low-income household?" },
-  { id: "rural_area", category: "Location", text: "Do you live in a rural or underserved area?" },
-  { id: "stem_course", category: "Program", text: "Are you planning to take or currently enrolled in a STEM, IT, or Education course?" },
-  { id: "priority_prog", category: "Program", text: "Are you enrolled in a priority program identified by the scholarship providers?" },
-  { id: "filipino", category: "Personal", text: "Are you a Filipino citizen?" },
-  { id: "legal_age", category: "Personal", text: "Are you of legal age (18 years old or above)?" },
-  { id: "good_moral", category: "Personal", text: "Do you have good moral character with no disciplinary records?" },
-  { id: "indigenous", category: "Special", text: "Are you a member of an indigenous cultural community or group?" },
-  { id: "pwd", category: "Special", text: "Are you a person with disability (PWD)?" },
-  { id: "solo_parent", category: "Special", text: "Are you a child of a solo parent?" },
-  { id: "athlete_talent", category: "Special", text: "Are you an athlete or do you have special talents (arts, music, sports)?" },
-  { id: "docs_ready", category: "Documents", text: "Can you provide the required documents (e.g., report card, valid ID, barangay certificate)?" },
-  { id: "maintain_grade", category: "Additional", text: "Are you willing to maintain the required grade average throughout the scholarship?" },
-  { id: "return_service", category: "Additional", text: "Are you willing to render return service if required by the scholarship?" }
-];
-
-const SCHOLARSHIPS = [
-  {
-    name: "CHED Free Higher Education (UniFAST)",
-    type: "Government",
-    description: "Under the Universal Access to Quality Tertiary Education Act, CHED provides free tuition and fees to students in state universities and colleges (SUCs).",
-    eligibility: ["Enrolled in SUC/LUC", "Filipino citizen", "No failing grades"],
-    match: (a) => a.enrolled && a.filipino && a.no_failing
-  },
-  {
-    name: "DOST-SEI Science & Technology Scholarship",
-    type: "Merit-Based",
-    description: "Offered by the Department of Science and Technology, this scholarship supports students pursuing S&T-related courses who demonstrate academic excellence.",
-    eligibility: ["90%+ average", "STEM course", "Honor roll", "Filipino citizen"],
-    match: (a) => a.grade_90 && a.stem_course && a.filipino && a.no_failing
-  },
-  {
-    name: "CHED Scholarship for Graduating HS Students",
-    type: "Government",
-    description: "CHED offers transition scholarships for outstanding graduating high school students entering college, prioritizing financially disadvantaged applicants.",
-    eligibility: ["Graduating HS student", "Good grades", "Low income"],
-    match: (a) => a.graduating_hs && a.no_failing && (a.family_income !== undefined && a.family_income <= 250000)
-  },
-  {
-    name: "DSWD 4Ps Educational Assistance",
-    type: "Social Welfare",
-    description: "Under the Pantawid Pamilyang Pilipino Program, eligible 4Ps beneficiaries receive educational stipends to stay in school through college.",
-    eligibility: ["4Ps beneficiary", "Enrolled", "Filipino citizen"],
-    match: (a) => a["4ps"] && a.enrolled && a.filipino
-  },
-  {
-    name: "NCIP Indigenous Peoples (IP) Scholarship",
-    type: "Special Category",
-    description: "The National Commission on Indigenous Peoples supports members of indigenous cultural communities in accessing tertiary education.",
-    eligibility: ["Indigenous community member", "Enrolled", "Filipino citizen"],
-    match: (a) => a.indigenous && a.enrolled && a.filipino
-  },
-  {
-    name: "NCDA PWD Scholarship Program",
-    type: "Special Category",
-    description: "The National Council on Disability Affairs, in coordination with CHED and TESDA, facilitates scholarship access for persons with disabilities.",
-    eligibility: ["Person with Disability (PWD)", "Enrolled", "Filipino citizen"],
-    match: (a) => a.pwd && a.enrolled && a.filipino
-  },
-  {
-    name: "DSWD Solo Parent Educational Assistance",
-    type: "Social Welfare",
-    description: "Children of solo parents registered under RA 8972 may be eligible for educational assistance from DSWD and LGU programs.",
-    eligibility: ["Child of solo parent", "Enrolled", "Low income"],
-    match: (a) => a.solo_parent && a.enrolled && (a.family_income !== undefined && a.family_income <= 250000)
-  },
-  {
-    name: "DepEd SHS Voucher Program (Expanded)",
-    type: "Government",
-    description: "The DepEd voucher program assists graduating JHS completers transitioning to Senior High School in private schools.",
-    eligibility: ["Graduating HS student", "Filipino citizen", "Good moral character"],
-    match: (a) => a.graduating_hs && a.filipino && a.good_moral
-  },
-  {
-    name: "LGU Local Scholarship (City/Provincial)",
-    type: "Local Government",
-    description: "Many city and provincial governments offer scholarships exclusively for residents. Requirements vary per LGU, but typically include residency, grades, and financial need.",
-    eligibility: ["Enrolled", "Low income", "Good moral character"],
-    match: (a) => a.enrolled && (a.family_income !== undefined && a.family_income <= 250000) && a.good_moral
-  },
-  {
-    name: "TESDA TWSP (Technical-Vocational)",
-    type: "Vocational",
-    description: "TESDA's Training for Work Scholarship Program supports students in TVET/technical-vocational programs, especially those from underserved areas.",
-    eligibility: ["Enrolled", "Filipino citizen", "Underserved area", "Willing to render service"],
-    match: (a) => a.enrolled && a.filipino && a.rural_area && a.return_service
-  },
-  {
-    name: "Athletes & Special Talents Scholarship",
-    type: "Special Category",
-    description: "Various universities and SUCs (e.g., UP, PLM, UST, FEU) offer special scholarships for student athletes or those with exceptional talents in arts, music, or sports.",
-    eligibility: ["Athlete or special talent", "Enrolled", "Filipino citizen"],
-    match: (a) => a.athlete_talent && a.enrolled && a.filipino
-  },
-  {
-    name: "Priority Course Scholarship (Education/Nursing)",
-    type: "Merit-Based",
-    description: "CHED and partner agencies sponsor students in nationally prioritized programs like Teacher Education, Nursing, Agriculture, and Engineering.",
-    eligibility: ["Priority course enrolled", "Honor roll or 90%+ average", "Filipino citizen"],
-    match: (a) => a.priority_prog && (a.honor_roll || a.grade_90) && a.filipino
-  },
-  {
-    name: "Rural Development Scholarship (NAPC/DA)",
-    type: "Government",
-    description: "The NAPC and Department of Agriculture support youth from rural and agricultural communities in pursuing agriculture-related or development courses.",
-    eligibility: ["Rural/underserved area", "Enrolled", "Filipino citizen", "Docs ready"],
-    match: (a) => a.rural_area && a.enrolled && a.filipino && a.docs_ready
-  },
-  {
-    name: "Presidential Scholarship for Excellence (PSE)",
-    type: "Merit-Based",
-    description: "A highly competitive scholarship for top-performing Filipino students with exceptional academic records and demonstrated leadership.",
-    eligibility: ["90%+ grade average", "Honor roll", "Good moral character", "All docs ready"],
-    match: (a) => a.grade_90 && a.honor_roll && a.good_moral && a.docs_ready && a.maintain_grade
-  }
-];
-
-let currentQuestion = 0;
-let userAnswers = {};
-let userName = "";
-let userAddress = "";
-let isTransitioning = false;
-
-function showScreen(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('screen-active'));
-  const target = document.getElementById(screenId);
-  if (target) target.classList.add('screen-active');
-}
-
-function startQuiz() {
-  const nameInput = document.getElementById('input-name').value.trim();
-  const addressInput = document.getElementById('input-address').value.trim();
-  const errorMsg = document.getElementById('landing-error');
-  if (!nameInput || !addressInput) { errorMsg.classList.add('visible'); return; }
-  errorMsg.classList.remove('visible');
-  userName = nameInput;
-  userAddress = addressInput;
-  currentQuestion = 0;
-  userAnswers = {};
-  showScreen('screen-quiz');
-  displayQuestion(currentQuestion);
-}
-
-function displayQuestion(index) {
-  const q = QUESTIONS[index];
-  const total = QUESTIONS.length;
-  const progress = (index / total) * 100;
-  document.getElementById('progress-fill').style.width = progress + '%';
-  document.getElementById('progress-count').textContent = `Question ${index + 1} of ${total}`;
-  document.getElementById('q-category').textContent = q.category;
-  document.getElementById('q-text').textContent = q.text;
-  document.getElementById('btn-yes').className = 'answer-btn';
-  document.getElementById('btn-no').className = 'answer-btn';
-  // Toggle between yes/no grid and income input
-  const answerGrid = document.getElementById('answer-grid');
-  const incomeWrap = document.getElementById('income-input-wrap');
-  if (q.inputType === 'income') {
-    answerGrid.style.display = 'none';
-    incomeWrap.style.display = 'block';
-    document.getElementById('input-income').value = '';
-  } else {
-    answerGrid.style.display = 'grid';
-    incomeWrap.style.display = 'none';
-  }
-  const inner = document.getElementById('question-inner');
-  inner.classList.remove('question-inner');
-  void inner.offsetWidth;
-  inner.classList.add('question-inner');
-}
-
-function recordAnswer(answer) {
-  if (isTransitioning) return;
-  isTransitioning = true;
-  const q = QUESTIONS[currentQuestion];
-  userAnswers[q.id] = answer;
-  if (answer) {
-    document.getElementById('btn-yes').classList.add('selected-yes');
-  } else {
-    document.getElementById('btn-no').classList.add('selected-no');
-  }
-  setTimeout(() => {
-    currentQuestion++;
-    if (currentQuestion < QUESTIONS.length) {
-      displayQuestion(currentQuestion);
-    } else {
-      showResults();
-    }
-    isTransitioning = false;
-  }, 420);
-}
-
-function submitIncome() {
-  if (isTransitioning) return;
-  const incomeVal = document.getElementById('input-income').value.trim();
-  if (!incomeVal || isNaN(incomeVal) || Number(incomeVal) < 0) return;
-  isTransitioning = true;
-  const q = QUESTIONS[currentQuestion];
-  userAnswers[q.id] = Number(incomeVal);
-  setTimeout(() => {
-    currentQuestion++;
-    if (currentQuestion < QUESTIONS.length) {
-      displayQuestion(currentQuestion);
-    } else {
-      showResults();
-    }
-    isTransitioning = false;
-  }, 420);
-}
-
-function showResults() {
-  showScreen('screen-processing');
-  setTimeout(() => {
-    const matched = SCHOLARSHIPS.filter(s => s.match(userAnswers));
-    renderResults(matched);
-    showScreen('screen-results');
-  }, 1500);
-}
-
-function renderResults(matched) {
-  document.getElementById('greeting-name').textContent = userName;
-  document.getElementById('greeting-address').textContent = userAddress;
-  document.getElementById('results-count').textContent = matched.length;
-  const listEl = document.getElementById('scholarship-list');
-  const noMatch = document.getElementById('no-match-msg');
-  listEl.innerHTML = '';
-  if (matched.length === 0) {
-    noMatch.style.display = 'block';
-    document.getElementById('results-count-badge').style.background = 'rgba(255,255,255,0.15)';
-  } else {
-    noMatch.style.display = 'none';
-    matched.forEach(s => {
-      const tagsHTML = s.eligibility.map(tag => `<span class="eligibility-tag">${tag}</span>`).join('');
-      const cardHTML = `
-        <div class="scholarship-item">
-          <div class="scholarship-item-header">
-            <span class="scholarship-name">${s.name}</span>
-            <span class="scholarship-type">${s.type}</span>
-          </div>
-          <div class="scholarship-item-body">
-            <p class="scholarship-desc">${s.description}</p>
-            <div class="eligibility-tags">${tagsHTML}</div>
-          </div>
-        </div>`;
-      listEl.insertAdjacentHTML('beforeend', cardHTML);
-    });
-  }
-}
-
-function restartApp() {
-  document.getElementById('input-name').value = '';
-  document.getElementById('input-address').value = '';
-  currentQuestion = 0;
-  userAnswers = {};
-  userName = '';
-  userAddress = '';
-  showScreen('screen-landing');
-}
-</script>
 </body>
 </html>
