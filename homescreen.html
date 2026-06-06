@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IskoHunt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --crimson: #8B0000;
+      --crimson-mid: #A61C1C;
+      --crimson-light: #f5e9e9;
+      --crimson-pale: #fdf5f5;
+      --text-dark: #1a1010;
+      --text-mid: #4a3535;
+      --text-muted: #7a6060;
+      --white: #ffffff;
+      --card-border: rgba(139,0,0,0.12);
+      --shadow-soft: 0 4px 32px rgba(139,0,0,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-dark);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND ── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      /* Replace src with your background image */
+      background: url('bg.png') center/cover no-repeat;
+      background-color: #fdf5f5;
+    }
+    .bg-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 40%, rgba(139,0,0,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 10% 80%, rgba(139,0,0,0.04) 0%, transparent 60%),
+        linear-gradient(to bottom, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.72) 100%);
+    }
+
+    /* ── WRAPPER ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 56px;
+      border-bottom: 1px solid rgba(139,0,0,0.08);
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.6);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      /* Replace with your logo image */
+      width: 140px;
+      height: 42px;
+      background: #f0e0e0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-mid);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: var(--crimson);
+      transition: width 0.25s ease;
+      border-radius: 2px;
+    }
+    .nav-links a:hover { color: var(--crimson); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--crimson);
+      color: var(--white);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .nav-cta:hover { background: var(--crimson-mid); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 64px;
+    }
+
+    .hero-logo-wrap {
+      /* Replace with your actual logo image via <img> tag or CSS background */
+      width: 220px;
+      height: 64px;
+      background: rgba(139,0,0,0.07);
+      border: 1.5px dashed rgba(139,0,0,0.25);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.1s ease forwards;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      background: var(--crimson-light);
+      color: var(--crimson);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s ease forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--text-dark);
+      max-width: 640px;
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.3s ease forwards;
+    }
+    .hero-title span { color: var(--crimson); }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 440px;
+      line-height: 1.65;
+      margin-bottom: 14px;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s ease forwards;
+    }
+
+    .hero-note {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 420px;
+      line-height: 1.6;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s ease forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s ease forwards;
+    }
+
+    .btn-primary {
+      background: var(--crimson);
+      color: var(--white);
+      border: none;
+      padding: 14px 36px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 6px 24px rgba(139,0,0,0.25);
+    }
+    .btn-primary:hover {
+      background: var(--crimson-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(139,0,0,0.3);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--crimson);
+      border: 1.5px solid rgba(139,0,0,0.35);
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+    .btn-ghost:hover {
+      background: var(--crimson-light);
+      border-color: var(--crimson);
+      transform: translateY(-1px);
+    }
+
+    /* ── FEATURE CARDS ── */
+    .cards-section {
+      padding: 0 48px 80px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s ease forwards;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+      cursor: default;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-soft);
+      border-color: rgba(139,0,0,0.22);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--crimson-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--crimson);
+    }
+    .card-icon svg { width: 22px; height: 22px; }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      letter-spacing: 0.01em;
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 720px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .cards-section { padding: 0 16px 60px; }
+      .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+      .hero { padding: 60px 20px 48px; }
+    }
+
+    /* ── HELP BUBBLE ── */
+    .help-bubble {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      background: var(--crimson);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(139,0,0,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      z-index: 200;
+    }
+    .help-bubble:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(139,0,0,0.4); }
+  </style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+
+<div class="page">
+
+  <!-- NAVBAR -->
+  <nav>
+    <img src="logo2.png" alt="IskoHunt" style="height:42px;object-fit:contain;"/>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Scholarships</a></li>
+      <li><a href="#">How It Works</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <!-- LOGO -->
+    <img src="logo2.png" alt="IskoHunt" class="hero-logo-wrap" style="background:none;border:none;object-fit:contain;" />
+
+    <span class="hero-eyebrow">From searching to success</span>
+
+    <h1 class="hero-title">Welcome to <span>IskoHunt</span></h1>
+
+    <p class="hero-sub">Discover scholarships that match your unique profile in minutes.</p>
+
+    <p class="hero-note">Skip the endless searching. Answer a few simple questions and let IskoHunt find financial aid opportunities tailored to your academic profile, financial background, and eligibility.</p>
+
+    <div class="hero-actions">
+      <a href="index.html"><button class="btn-primary">Get Started</button></a>
+    </div>
+
+  </section>
+
+  <!-- FEATURE CARDS -->
+  <div class="cards-section">
+    <div class="cards-grid">
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <div class="card-title">Smart Matching</div>
+        <div class="card-desc">Our intelligent system filters scholarships based on your specific qualifications and needs.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="card-title">Quick &amp; Easy</div>
+        <div class="card-desc">Simple yes-or-no questions get you matched with opportunities in minutes, not hours.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="card-title">Verified Results</div>
+        <div class="card-desc">Get only scholarships you're eligible for, based on your academic and financial profile.</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- HELP BUBBLE -->
+<div class="help-bubble" title="Help">?</div>
+
+</body>
+</html>
